@@ -13,6 +13,9 @@
 import ProductCard from './subcomponents/ProductCard.vue';
 
 defineProps(['catalog']); 
+
+import * as cat from '@/comp-store/catalog';
+console.log(cat.getCategories());
 </script>
 
 <style lang="scss" scoped>

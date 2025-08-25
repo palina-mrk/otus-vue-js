@@ -6,7 +6,7 @@ import OrderView from '@/components/OrderView.vue'
 import ProductView from '@/components/ProductView.vue'
 import LoginView from '@/components/LoginView.vue'
 import * as basket from '@/comp-store/basket'
-import * as catalog from '@/comp-store/catalog'
+import * as user from '@/comp-store/user-info'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -21,6 +21,12 @@ const router = createRouter({
   { path: '/admin', 
     name: 'admin', 
     component: AdminView,
+    beforeEnter: () => {
+      if((user.isAutorized.value === true) && (user.logInfo.isAdmin))
+        return true;
+      alert('Please, log in as admin!')
+        return({name: 'login'});
+    },
     meta: { title: 'page to create new product'}, },
   { path: '/order', 
     name: 'order', 

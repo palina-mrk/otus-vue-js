@@ -5,16 +5,14 @@
       type="text" 
       name="login" 
       placeholder="login"
-      :value="logInfo.login"
-      @blur="logInfo.login = $event.target.value"
-      @keyup.enter="logInfo.login = $event.target.value"
+      v-model="logInfo.login"
       id="login">
 
     <label for="password">Your password:</label>
     <input 
       type="password" 
       name="password" 
-      placeholder="*********"
+      placeholder="1111"
       v-model="logInfo.currentPassword"
       id="password">
 
@@ -28,7 +26,7 @@
     </div>
 
     <div class="buttons">
-      <button
+      <button 
         @click="logIn"
       >log in</button>
       <button
@@ -39,11 +37,11 @@
 </template>
 
 <script setup>
-import { logInfo, clearLogInfo, passwordIsValid } from '@/comp-store/user-info';
+import { logInfo, clearLogInfo, isAutorized } from '@/comp-store/user-info';
 defineProps(['catalog']);
 
 function logIn () {
-  if((passwordIsValid.value) && (logInfo.login.length > 0)){
+  if(isAutorized.value){
     alert('You logged in succesly!');
   } else if (logInfo.login.length == 0) {
     alert('Please, input the login');  

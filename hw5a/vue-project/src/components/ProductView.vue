@@ -31,6 +31,7 @@
 import { reactive } from 'vue';
 import { useRoute } from 'vue-router';
 import { addToBasket, itemCost, itemCount } from '@/comp-store/basket';
+defineProps(['catalog']); 
 
 const route = useRoute();
 import { getItem } from '@/comp-store/catalog';

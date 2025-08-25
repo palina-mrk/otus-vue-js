@@ -1,29 +1,51 @@
-# vue-project
+## Домашняя работа №5
 
-This template should help get you started developing with Vue 3 in Vite.
+### Необходимо создать
 
-## Recommended IDE Setup
+- Компоненты:
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+    меню навгации
 
-## Customize configuration
+    список товаров в корзине
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+    главная страница
 
-## Project Setup
+    страница товара
 
-```sh
-npm install
-```
+    страница добавления товара (простой аналог админки)
 
-### Compile and Hot-Reload for Development
+    страница чекаута (заказа товара)
 
-```sh
-npm run dev
-```
+    форма логина
 
-### Compile and Minify for Production
+- Custom hooks и composition API:
 
-```sh
-npm run build
-```
+    Переписать логику загрузки данных из Д3#2 в кастомные хуки
+
+- Роутер:
+
+    Установить роутер и добавить роуты для страниц
+
+    На странице товара сделать parameter: id и передать его при переходе из каталога и далее на странице товара загрузить из API данные этого товара
+
+### Созданы:
+
+- Компоненты:
+
+    меню навгации
+
+    список товаров в корзине - 'Basket'
+
+    главная страница - 'Home'
+
+    страница товара - переход по кнопке 'more details'  на карточке товара
+
+    страница добавления товара (простой аналог админки) - 'Create new product', становится активна после того, как пользователь логинится как админ
+
+    страница чекаута (заказа товара) - 'Order'
+
+    форма логина - 'Login', пароль обязательно 1111, логин любой
+
+- Логика и функции для работы с корзиной, списком товаров и пользовательскими анными вынесены в .js файлы в папке 'src/comp-store'
+
+- При перезагрузка страницы вся информация теряется, пока не умею использовать для сохранения localStorage и sessionStorage

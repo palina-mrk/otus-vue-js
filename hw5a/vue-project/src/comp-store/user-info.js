@@ -55,3 +55,8 @@ export function clearLogInfo() {
   logInfo.currentPassword = '';
   logInfo.rightPassword = 'password';
 }
+
+export const isAutorized = computed (() => Boolean(
+    (logInfo.currentPassword == logInfo.rightPassword) &&
+    (logInfo.login.length > 0)
+));
