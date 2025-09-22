@@ -19,10 +19,9 @@ const { result, refetch } = useQuery(
   {}
 )
 
-import {ref} from 'vue'
-let myTitle = ref('')
-let myPrice = 12.5
-let myCategory = 'vvv'
+import { reactive } from 'vue'
+import ProductInput from './components/subcomponents/ProductInput.vue';
+const newProduct = reactive({});
 const { mutate: addProductMutate } = useMutation(
   gql`
     mutation AddProduct($productInput: ProductInput!) {
@@ -34,14 +33,21 @@ const { mutate: addProductMutate } = useMutation(
   `,() => ({variables: 
     {
       productInput: {
-        title: myTitle.value,
-        price: 12.5,
-        category: 'men\'s clothing'
+        title: newProduct.title,
+        price: newProduct.price,
+        category: newProduct.category,
+        image: newProduct.image,
+        description: newProduct.description,
       },
     }}),
 )
 
-function addProduct() {
+function addProduct(product) {
+  newProduct.title = product.title || 'some title';
+  newProduct.description = product.description || 'some text';
+  newProduct.price = product.price || 0.0;
+  newProduct.category = product.category;
+  newProduct.image = product.image;
   addProductMutate()
   refetch()
 }
@@ -49,16 +55,18 @@ function addProduct() {
 
 <template>
   <header class="header">
-    <span class="logo">Internet Shop</span>
-    <div class="right__wrapper">
+    <div class="header__left-wrapper">
+      <span class="logo">Internet Shop</span>
+      <ProductInput class="checkbox" 
+        :categories="result?.categories"
+        @addProduct="addProduct($event)"></ProductInput>
+    </div>
+    <div class="header__right-wrapper">
       <Navigation class="nav"></Navigation>
       <!--BasketState class="basket-info"></BasketState-->
     </div>
   </header>
   <main class="main">
-      <input type="text" v-model="myTitle">
-      <button @click="addProduct">add</button>
-    
     <router-view 
       v-if="result !== null" 
       :catalog="result?.products"
@@ -86,21 +94,25 @@ function addProduct() {
   justify-content: space-between;
 }
 
-.logo {
+.header__left-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: start;
+}
+
+.logo,
+.checkbox {
   color: wheat;
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   font-size: 22px;
   font-weight: 500;
   opacity: 0.5;
-  transform: scaleX(80%);
-}
-
-.nav {
-  width: 100%;
+  transform: scaleX(80%) translateX(-12%);
 }
 
 @media (max-width: 800px) {
-  .right__wrapper {
+  .header__right-wrapper {
     width: 300px;
   }
 }
@@ -115,7 +127,7 @@ function addProduct() {
   }
 }
 
-.right__wrapper {
+.header__right-wrapper {
   display: flex;
   flex-direction: column;
   align-items: end;

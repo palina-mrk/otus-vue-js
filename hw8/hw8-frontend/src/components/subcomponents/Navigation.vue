@@ -27,7 +27,7 @@ const width = defineProps(["width"]);
   list-style-type: none;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: end;
   gap: 5px 20px;
   flex-wrap: wrap;
   align-items: center;
