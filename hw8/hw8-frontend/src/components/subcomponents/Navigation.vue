@@ -1,23 +1,22 @@
 <template>
   <ul class="main-nav__list">
     <li class="main-nav__item">
-      <router-link
+      <a
         class="main-nav__link"
-        :to="{name: 'home'}"
-      >home</router-link>
+        @click="$emit('to-home')"
+      >home</a>
     </li>
     <li class="main-nav__item">
-      <router-link
+      <a
         class="main-nav__link"
-        :to="{name: 'basket'}"
-      >basket</router-link>
+        @click="$emit('to-basket')"
+      >basket</a>
     </li>
     
   </ul>
 </template>
 
 <script setup>
-const width = defineProps(["width"]);
 </script>
 
 <style lang="scss" scoped>

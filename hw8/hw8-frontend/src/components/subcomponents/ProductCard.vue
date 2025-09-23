@@ -7,14 +7,16 @@
     </div>
     <h2 class="product-card__title">{{ product.title }}</h2>
     <p class="product-card__description">{{ product.description }}</p>
-    <!--div class="product-card__buttons">
-      <button @click="addToBasket(product.id, 1)" class="product-card__button">add to basket</button>
-      <router-link :to="{name: 'product', params: {id: Number(product.id)}}" class="product-card__button">more details</router-link>
+    <div class="product-card__buttons">
+      <button @click="$emit('add-product')" class="product-card__button">add to basket</button>
+      <a 
+        @click="$emit('to-product')"
+        class="product-card__button">more details</a>
     </div>
     <div  class="product-card__basket-info">
-      <span class="product-card__basket-count">already in basket: {{ itemCount(product.id) }}</span>
-      <span class="product-card__basket-cost">cost: {{  itemCost(product.id)  }}</span>
-    </div-->
+      <span class="product-card__basket-count">already in basket: {{ itemCount }}</span>
+      <span class="product-card__basket-cost">cost: {{  itemCount * getPrice(product.id)  }}</span>
+    </div>
     <div class="product-card__rating-wrapper">
       <svg class="product-card__star" id="'icon' + product.id" enable-background="new 0 0 512 512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><g><path d="m284.625 29.622 63.9 122.275 136.4 22.491c25.887 4.268 36.152 35.988 17.674 54.614l-96.891 97.663 20.621 135.843c3.924 25.847-22.885 45.403-46.299 33.773l-124.03-61.603-124.03 61.604c-23.414 11.629-50.223-7.927-46.299-33.773l20.621-135.843-96.89-97.664c-18.478-18.626-8.214-50.346 17.674-54.614l136.4-22.491 63.9-122.275c12.081-23.119 45.167-23.119 57.249 0z" /></g></svg>
       <span class="product-card__rate">{{ Number(product.rating.rate).toFixed(2) }}</span>
@@ -24,8 +26,15 @@
 </template>
 
 <script setup>
-import { defineProps } from 'vue';
-const props = defineProps(["product"]);
+import { defineProps, computed } from 'vue';
+const {product, basket, catalog} = defineProps(["product", "basket", "catalog"]);
+
+const itemCount = computed(() => basket[product.id] ? basket[product.id] : 0)
+
+const getPrice = (id) => catalog.find(el => el.id == id).price;
+
+const itemCost = computed(() => Number(itemCount) * Number (getPrice(product.id)))
+
 </script>
 
 <style lang="scss" scoped>

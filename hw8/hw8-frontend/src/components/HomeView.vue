@@ -2,8 +2,12 @@
   <h1 class="products-list__heading">Products list</h1>
   <ul class="products-list">
     <li class="products-list__item" v-for="product in catalog">
-      <ProductCard 
+      <ProductCard
+        @toProduct="$emit('to-product', product.id)" 
+        @addProduct="$emit('add-product', product.id)" 
         :product="product"
+        :catalog="catalog"
+        :basket="basket"
         ></ProductCard>
     </li>
   </ul>
@@ -12,7 +16,7 @@
 <script setup>
 import ProductCard from './subcomponents/ProductCard.vue';
 
-defineProps(['catalog']); 
+defineProps(['catalog', 'basket']); 
 </script>
 
 <style lang="scss" scoped>

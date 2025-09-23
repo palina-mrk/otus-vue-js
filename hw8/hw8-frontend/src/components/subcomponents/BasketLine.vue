@@ -1,27 +1,32 @@
 <template>
       <span class="basket__point">{{ id }}</span>
-      <span class="basket__point basket__point--width-fixed">{{ getTitle(id)}}</span>
+      <span class="basket__point basket__point--width-fixed">{{ product.title }}</span>
       <button class="basket__point basket__point--button"
-        @click="obj.addToBasket(id, -1)">-</button>
+        @click="$emit('del-product')">-</button>
       <input class="basket__point basket__point--input" 
         type="number"
         :value="count"
-        @blur="obj.changeCount(id, $event.target.value)"
-        @keyup.enter="obj.changeCount(id, $event.target.value)"></input>
+        @blur="$emit('change-count', {count: $event.target.value, id: id})"
+        @keyup.enter="$emit('change-count', {count: $event.target.value, id: id})"></input>
       <button class="basket__point basket__point--button"
-        @click="obj.addToBasket(id, 1)">+</button>
-      <span class="basket__point basket__point--right">{{ Number(getPrice(id)).toFixed(2)}}</span>
-      <span class="basket__point basket__point--right">{{ Number(obj.itemCost(id)).toFixed(2)}}</span>
+        @click="$emit('add-product')">+</button>
+      <span class="basket__point basket__point--right">{{ Number(price).toFixed(2)}}</span>
+      <span class="basket__point basket__point--right">{{ Number(price).toFixed(2)}}</span>
 </template>
 
 <script setup>
-const props = defineProps(['id','count']);
+import { defineProps, computed } from 'vue'
+const { id, count, catalog, basket } = defineProps(['id','count', 'catalog', 'basket']);
+
+const price = computed(() => catalog.find(el => el.id == id).price);
+const product = computed(() => catalog.find(el => el.id == id));
+
 </script>
 
 <style lang="scss" scoped>
 .basket__list {
   display: grid;
-  grid-template-columns: 3em 30em 30px 50px 30px repeat(2, 90px);
+  grid-template-columns: 3em 1fr 30px 50px 30px repeat(2, 90px);
   gap: 5px;
 }
 

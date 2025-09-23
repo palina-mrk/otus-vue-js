@@ -11,12 +11,12 @@
           <span class="product-card__category"> {{ product.category }}</span>
       </div>
       <div class="product-card__buttons">
-        <button @click="addToBasket(product.id, 1)" class="product-card__button">add to basket</button>
-        <router-link :to="{name: 'basket'}" class="product-card__button ">go to basket</router-link>
+        <button @click="$emit('add-product', product.id)" class="product-card__button">add to basket</button>
+        <a @click="$emit('to-basket')" class="product-card__button ">go to basket</a>
       </div>
       <div  class="product-card__basket-info">
-        <span class="product-card__basket-count">already in basket: {{ itemCount(product.id) }}</span>
-        <span class="product-card__basket-cost">cost: {{  itemCost(product.id)  }}</span>
+        <span class="product-card__basket-count">already in basket: </span>
+        <span class="product-card__basket-cost">cost: </span>
       </div>
       <div class="product-card__rating-wrapper">
         <svg class="product-card__star" id="'icon' + product.id" enable-background="new 0 0 512 512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><g><path d="m284.625 29.622 63.9 122.275 136.4 22.491c25.887 4.268 36.152 35.988 17.674 54.614l-96.891 97.663 20.621 135.843c3.924 25.847-22.885 45.403-46.299 33.773l-124.03-61.603-124.03 61.604c-23.414 11.629-50.223-7.927-46.299-33.773l20.621-135.843-96.89-97.664c-18.478-18.626-8.214-50.346 17.674-54.614l136.4-22.491 63.9-122.275c12.081-23.119 45.167-23.119 57.249 0z" /></g></svg>
@@ -28,12 +28,9 @@
 </template>
 
 <script setup>
-import { reactive } from 'vue';
-import { useRoute } from 'vue-router';
-defineProps(['catalog']); 
+import { defineProps } from 'vue';
+defineProps(['product']); 
 
-const route = useRoute();
-const product = reactive(getItem(route.params.id));
 </script>
 
 <style lang="scss" scoped>
@@ -70,6 +67,7 @@ const product = reactive(getItem(route.params.id));
 
 .product-card__image {
   object-fit: contain;
+  overflow: hidden;
 }
 
 .product-card__price-wrapper {

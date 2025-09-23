@@ -1,13 +1,25 @@
 <template>
-  <h1 class="basket__item basket__heading">The basket</h1>
-  <div v-if="obj.totalCount.value != 0" class="basket__list">
+  <div class="basket__item">
+    <h1 class="basket__heading">The basket</h1>
+    <button class="basket__point basket__point--button"
+      @click="$emit('clear-basket')">clear basket</button>     
+  </div>
+  <div v-if="itemIdCount.value != 0" class="basket__list">
       <span class="basket__point basket__point--bold">id</span>
       <span class="basket__point basket__point--bold basket__point--width-fixed">title</span>
       <span class="basket__point basket__point--bold basket__point--wide">count</span>
       <span class="basket__point basket__point--bold basket__point--right">price</span>
       <span class="basket__point basket__point--bold basket__point--right">cost </span>
-    <template class="basket__row" v-for="[id, count] in Object.entries(obj.basket.value)">
-      <BasketLine v-if="count > 0" :id="id" :count="count"></BasketLine>
+    <template class="basket__row" v-for="[id, count] in Object.entries(basket)">
+      <BasketLine 
+      v-if="count > 0" 
+      :id="id" 
+      :count="count" 
+      :basket="basket" 
+      :catalog="catalog"
+      @delProduct="$emit('del-product', id)"
+      @changeCount="$emit('change-count', $event)"
+      @addProduct="$emit('add-product', id)"></BasketLine>
       <!--span class="basket__point">{{ id }}</span>
       <span class="basket__point basket__point--width-fixed">{{ getTitle(id)}}</span>
       <button class="basket__point basket__point--button"
@@ -23,24 +35,39 @@
       <span class="basket__point basket__point--right">{{ obj.itemCost(id)}}<b>$</b></span-->
     </template>
     <span class="basket__total-word">total cost:</span>
-    <span class="basket__total-cost"><b>{{ Number(obj.totalCost.value).toFixed(2) }}</b></span>
+    <span class="basket__total-cost"><b>{{ Number(totalCost).toFixed(2) }}</b></span>
   </div>
-  <div v-if="obj.totalCount.value == 0" class="basket__heading"><i>The basket is empty</i></div>
+  <div v-if="itemIdCount.value == 0" class="basket__heading"><i>The basket is empty</i></div>
 </template>
 
 <script setup>
 import BasketLine from './subcomponents/BasketLine.vue';
-defineProps(['catalog']); 
+import { defineProps, computed } from 'vue'
+const { catalog, basket } = defineProps(['catalog', 'basket'])
+
+const itemIdCount = computed(() => Object.keys(basket).length)
+
+const getPrice = (id) => catalog.find(el => el.id == id).price;
+
+const totalCost = computed(() => Object.keys(basket).reduce((acc, id) => (Number(acc) + basket[id] * getPrice(id)), 0))
 
 </script>
 
 <style lang="scss" scoped>
-.basket__list,
-.basket__heading {
-  background-color: wheat;
+.basket__item,
+.basket__list {
+  display: flex;
   padding: 20px 5px 10px 20px;
+  justify-content: space-between;
+  background-color: wheat;
   border-radius: 12px;
   color: #213547;
+  margin-bottom: 20px;
+}
+
+.basket__heading {
+  margin: 0;
+  padding: 0;
 }
 
 .basket__list {
@@ -120,4 +147,21 @@ defineProps(['catalog']);
 .basket__point--input::-webkit-inner-spin-button {
     -webkit-appearance: none; 
 }
+
+.basket__point--button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  padding: 2px;
+  width: 150px;
+  min-width: fit-content;
+  border: 2px solid gray;
+  border-radius: 8px;
+  background-color: #fff;
+  text-decoration: none;
+  color: black;
+  cursor: pointer;
+}
+
 </style>

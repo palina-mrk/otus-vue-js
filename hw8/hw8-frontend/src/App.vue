@@ -1,7 +1,23 @@
 <script setup>
 import Navigation from './components/subcomponents/Navigation.vue'
+import HomeView from './components/HomeView.vue'
+import ProductView from './components/ProductView.vue';
+import BasketView from './components/BasketView.vue'
+import BasketState from './components/subcomponents/BasketState.vue'
 import { useQuery, useMutation } from '@vue/apollo-composable';
 import gql from 'graphql-tag'
+import { reactive, computed } from 'vue'
+const pageView = reactive({
+  home: 1,
+  basket: 0,
+  product: 0,
+})
+function setPage(field, id) {
+  Object.keys(pageView).forEach((key) => pageView[key] = 0);
+  pageView[field] = id;  
+  console.log(pageView)  
+}
+
 
 const { result, refetch } = useQuery(
   gql`{
@@ -19,7 +35,6 @@ const { result, refetch } = useQuery(
   {}
 )
 
-import { reactive } from 'vue'
 import ProductInput from './components/subcomponents/ProductInput.vue';
 const newProduct = reactive({});
 const { mutate: addProductMutate } = useMutation(
@@ -51,6 +66,44 @@ function addProduct(product) {
   addProductMutate()
   refetch()
 }
+
+import { io } from 'socket.io-client'
+const socket = io('ws://localhost:3000')
+//basket: {id1: count1, id2: count2, ...}
+const basket = reactive({})
+
+//разговариваем с сервером
+socket.on('pong', (changeInfo) => {
+  if(changeInfo.allClear) {
+    Object.keys(basket).forEach((id) => delete basket[id]);
+  } else {
+    basket[changeInfo.id] = changeInfo.count;
+    if(changeInfo.count === undefined)
+      delete basket[changeInfo.id];
+  }
+
+  console.log('renew-basket', basket)
+})
+
+function addToBasket(productID, productCount) {
+  socket.emit('add-to-basket', {
+    id: productID,
+    count: productCount
+  })
+}
+
+function clearBasket() {
+  socket.emit('clear-basket')
+  setPage('home', 1)
+}
+
+function changeCount(productID, productCount) {
+  socket.emit('change-count', {
+    id: productID,
+    count: productCount
+  })
+}
+
 </script>
 
 <template>
@@ -62,16 +115,40 @@ function addProduct(product) {
         @addProduct="addProduct($event)"></ProductInput>
     </div>
     <div class="header__right-wrapper">
-      <Navigation class="nav"></Navigation>
-      <!--BasketState class="basket-info"></BasketState-->
+      <Navigation 
+        class="nav"
+        @toBasket="setPage('basket', 1)"
+        @toHome="setPage('home', 1)"></Navigation>
+      <BasketState 
+        :catalog="result?.products"
+        :basket="basket"
+        class="basket-info"></BasketState>
     </div>
   </header>
   <main class="main">
-    <router-view 
-      v-if="result !== null" 
+    <HomeView v-if="(result !== null) && pageView.home == 1"
       :catalog="result?.products"
       :categories="result?.categories"
-      />
+      :basket="basket"
+      @addProduct="addToBasket($event, 1)"
+      @toProduct="setPage('product', $event)"
+      ></HomeView>
+    <BasketView v-else-if="(result !== null) && pageView.basket == 1"
+      :basket="basket"
+      :catalog="result?.products"
+      :categories="result?.categories"
+      @addProduct="addToBasket($event, 1)"
+      @delProduct="addToBasket($event, -1)"
+      @clearBasket="clearBasket"
+      @changeCount="changeCount($event.id, $event.count)"
+      ></BasketView>
+    <ProductView v-else-if="(result !== null) && pageView.product != 0"
+      :product="result?.products[pageView.product - 1]"
+      @toBasket="setPage('basket', 1)"
+      @addProduct="addToBasket($event, 1)"
+      :basket="basket"
+      :catalog="result?.products"
+    ></ProductView>
     <p v-else>is loading...</p>
   </main>
 
@@ -92,6 +169,8 @@ function addProduct(product) {
   flex-wrap: wrap;
   gap: 5px 20px;
   justify-content: space-between;
+  position: fixed;
+  z-index: 2;
 }
 
 .header__left-wrapper {
@@ -136,6 +215,7 @@ function addProduct(product) {
 
 .main {
   padding: 20px;
+  padding-top: 120px;
   max-height: calc(100vh - 200px);
 }
 </style>
