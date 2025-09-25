@@ -3,8 +3,8 @@
   <ul class="products-list">
     <li class="products-list__item" v-for="product in catalog">
       <ProductCard
-        @toProduct="$emit('to-product', product.id)" 
-        @addProduct="$emit('add-product', product.id)" 
+        @toProduct="emit('to-product', product.id)" 
+        @addProduct="emit('add-product', product.id)" 
         :product="product"
         :catalog="catalog"
         :basket="basket"
@@ -15,8 +15,17 @@
 
 <script setup lang="ts">
 import ProductCard from './subcomponents/ProductCard.vue';
+import { type Product } from './HomeView.types.ts'
 
-defineProps(['catalog', 'basket']); 
+const { catalog, basket } = defineProps<{
+  catalog: Array<Product>;
+  basket: any;
+}>()
+
+const emit = defineEmits<{
+  (e: 'to-product', id: string): void;
+  (e: 'add-product', id: string): void;
+}>()
 </script>
 
 <style lang="scss" scoped>

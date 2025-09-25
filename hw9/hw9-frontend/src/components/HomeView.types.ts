@@ -14,4 +14,4 @@ export type Product = {
 export type Info = {
   id: string,
   count: string
-}
+};

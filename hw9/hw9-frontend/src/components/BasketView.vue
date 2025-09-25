@@ -2,7 +2,7 @@
   <div class="basket__item">
     <h1 class="basket__heading">The basket</h1>
     <button class="basket__point basket__point--button"
-      @click="$emit('clear-basket')">clear basket</button>     
+      @click="emit('clear-basket')">clear basket</button>     
   </div>
   <div v-if="itemIdCount.value != 0" class="basket__list">
       <span class="basket__point basket__point--bold">id</span>
@@ -12,14 +12,14 @@
       <span class="basket__point basket__point--bold basket__point--right">cost </span>
     <template class="basket__row" v-for="[id, count] in Object.entries(basket)">
       <BasketLine 
-      v-if="count > 0" 
+      v-if="Number(count) > 0" 
       :id="id" 
-      :count="count" 
+      :count="String(count)" 
       :basket="basket" 
       :catalog="catalog"
-      @delProduct="$emit('del-product', id)"
-      @changeCount="$emit('change-count', $event)"
-      @addProduct="$emit('add-product', id)"></BasketLine>
+      @delProduct="emit('del-product', id)"
+      @changeCount="emit('change-count', $event)"
+      @addProduct="emit('add-product', id)"></BasketLine>
       <!--span class="basket__point">{{ id }}</span>
       <span class="basket__point basket__point--width-fixed">{{ getTitle(id)}}</span>
       <button class="basket__point basket__point--button"
@@ -41,16 +41,26 @@
 </template>
 
 <script setup lang="ts">
-import BasketLine from './subcomponents/BasketLine.vue';
-import { defineProps, computed } from 'vue'
-const { catalog, basket } = defineProps(['catalog', 'basket'])
+import {type Product, type Info} from './BasketView.types.ts'
+import BasketLine from './subcomponents/BasketLine.vue'
+import { computed, type ComputedRef } from 'vue'
+const { catalog, basket } = defineProps<{
+  catalog: Array<Product>;
+  basket: any;
+}>()
 
-const itemIdCount = computed(() => Object.keys(basket).length)
+const itemIdCount: ComputedRef = computed(() => Object.keys(basket).length)
 
-const getPrice = (id) => catalog.find(el => el.id == id).price;
+const getPrice = (id: string) => catalog?.find(el => el?.id == id)?.price;
 
-const totalCost = computed(() => Object.keys(basket).reduce((acc, id) => (Number(acc) + basket[id] * getPrice(id)), 0))
+const totalCost: ComputedRef<number | undefined> = computed(() => Object.keys(basket).reduce((acc, id) => (acc = Number(acc) + Number(basket[id]) * Number (getPrice(id))), 0))
 
+const emit = defineEmits<{
+  (e: 'del-product', id: string): void;
+  (e: 'change-count', info: Info): void;
+  (e: 'add-product', id: string): void;
+  (e: 'clear-basket'): void;
+}>()
 </script>
 
 <style lang="scss" scoped>

@@ -38,7 +38,7 @@
       v-model="newProduct.category"
       id="category">
       <option disabled value="">some category</option>
-      <option v-for="category in categories" 
+      <option v-for="category in categories.categories" 
         :value="category"
         :key="String(category)"
         >{{ category }}</option>
@@ -69,6 +69,8 @@ import { ref, reactive, defineEmits, type Reactive, type Ref } from 'vue';
 const categories = defineProps<{
   categories: Array<string>;
 }>()
+
+console.log(categories)
 
 const newProduct: Reactive<ProductInput> = reactive({
   title: undefined,

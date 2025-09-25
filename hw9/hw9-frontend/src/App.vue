@@ -6,13 +6,14 @@ import BasketView from './components/BasketView.vue'
 import BasketState from './components/subcomponents/BasketState.vue'
 import { useQuery, useMutation } from '@vue/apollo-composable';
 import gql from 'graphql-tag'
-import { reactive } from 'vue'
-const pageView = reactive({
+import { reactive, type Reactive } from 'vue'
+import { type ProductInputType, type Product, type Payload } from './App.types';
+const pageView: any = reactive({
   home: 1,
   basket: 0,
   product: 0,
 })
-function setPage(field, id) {
+function setPage(field: string, id: number) {
   Object.keys(pageView).forEach((key) => pageView[key] = 0);
   pageView[field] = id;  
   console.log(pageView)  
@@ -36,7 +37,14 @@ const { result, refetch } = useQuery(
 )
 
 import ProductInput from './components/subcomponents/ProductInput.vue';
-const newProduct = reactive({});
+const newProduct: Reactive<ProductInputType> = reactive({
+  title: undefined,
+  price: undefined,
+  description: undefined,
+  category: undefined,
+  image: undefined,
+
+});
 const { mutate: addProductMutate } = useMutation(
   gql`
     mutation AddProduct($productInput: ProductInput!) {
@@ -57,7 +65,7 @@ const { mutate: addProductMutate } = useMutation(
     }}),
 )
 
-function addProduct(product) {
+function addProduct(product: Product) {
   newProduct.title = product.title || 'some title';
   newProduct.description = product.description || 'some text';
   newProduct.price = product.price || 0.0;
@@ -70,10 +78,10 @@ function addProduct(product) {
 import { io } from 'socket.io-client'
 const socket = io('ws://localhost:3000')
 //basket: {id1: count1, id2: count2, ...}
-const basket = reactive({})
+const basket: any = reactive({})
 
 //разговариваем с сервером
-socket.on('pong', (changeInfo) => {
+socket.on('pong', (changeInfo: Payload) => {
   if(changeInfo.allClear) {
     Object.keys(basket).forEach((id) => delete basket[id]);
   } else {
@@ -85,7 +93,7 @@ socket.on('pong', (changeInfo) => {
   console.log('renew-basket', basket)
 })
 
-function addToBasket(productID, productCount) {
+function addToBasket(productID: string, productCount: number) {
   socket.emit('add-to-basket', {
     id: productID,
     count: productCount
@@ -97,7 +105,7 @@ function clearBasket() {
   setPage('home', 1)
 }
 
-function changeCount(productID, productCount) {
+function changeCount(productID: string, productCount: number) {
   socket.emit('change-count', {
     id: productID,
     count: productCount

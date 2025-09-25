@@ -1,19 +1,3 @@
-/*
-export enum APP_BUTTON_SIZE {
-  S = 'S',
-  M = 'M',
-  L = 'L'
-}
-*/
-
-export type ValueOf<T extends Record<string, unknown>> = T[keyof T];
-
-export const APP_BUTTON_SIZE = {
-  S: 'S',
-  M: 'M',
-  L: 'L'
-} as const;
-
 export type Product = {
   id: string,
   title: string,
@@ -26,3 +10,28 @@ export type Product = {
     count: number
   }
 };
+
+export type Info = {
+  id: string,
+  count: string
+};
+
+export type ProductInputType = {
+  title: string | undefined,
+  price: number | undefined,
+  description: string | undefined,
+  category: string | undefined,
+  image: string | undefined,
+};
+
+export type PageView = {
+  home: number,
+  basket: number,
+  product: number,
+}
+
+export type Payload = {
+  allClear: boolean,
+  id: number,
+  count: number,
+}

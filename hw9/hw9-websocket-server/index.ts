@@ -1,0 +1,68 @@
+import { Server } from 'socket.io'
+import { type Payload } from './index.types.ts';
+
+const server = new Server(3000, {
+  cors: {
+    origin: '*',
+  },
+})
+
+//{id1: count1, id2: count2, ...}
+let basket: any = {};
+
+server.on('connection', (clientSocket) => {
+  clientSocket.emit('pong', {
+    allClear: true,
+    id: 0,
+    count: 0
+  })
+  basket = {};
+
+  clientSocket.on('add-to-basket', (payload: Payload) => {
+    console.log('add-to-basket', payload)
+    if(!basket[payload.id])
+      basket[payload.id] = 0;
+
+    basket[payload.id] = Number(basket[payload.id]) + Number(payload.count)
+    if(basket[payload.id] <= 0)
+      delete basket[payload.id];
+
+    console.log(Object.entries(basket))
+
+    clientSocket.emit('pong', {
+      allClear: false,
+      id: payload.id,
+      count: basket[payload.id]
+    })
+  })
+
+  clientSocket.on('change-count', (payload: Payload) => {
+    console.log('change-count', payload)
+    
+    basket[payload.id] = Number(payload.count)
+    if(basket[payload.id] <= 0)
+      delete basket[payload.id];
+
+    console.log(Object.entries(basket))
+
+    clientSocket.emit('pong', {
+      allClear: false,
+      id: payload.id,
+      count: basket[payload.id]
+    })
+  })
+
+  clientSocket.on('clear-basket', () => {
+    console.log('clear-basket')
+    basket = {}
+
+    clientSocket.emit('pong', {
+      allClear: true,
+      id: 0,
+      count: 0
+    })
+  })
+})
+
+
+console.log('WS Server is up')

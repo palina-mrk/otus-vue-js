@@ -9,4 +9,4 @@ export type Product = {
     rate: number, 
     count: number
   }
-} | undefined;
+};

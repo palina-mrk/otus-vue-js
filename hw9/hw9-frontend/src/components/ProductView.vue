@@ -1,18 +1,18 @@
 <template>
   <div class="product-card">
     <div class="product-card__image-wrapper">
-      <img class="product-card__image" :src="product.image" alt="Картинка товара">
+      <img class="product-card__image" :src="product?.image" alt="Картинка товара">
     </div>
     <div class="product-card__inner">
-      <h2 class="product-card__title">{{ product.title }}</h2>
-      <p class="product-card__description">{{ product.description }}</p>
+      <h2 class="product-card__title">{{ product?.title }}</h2>
+      <p class="product-card__description">{{ product?.description }}</p>
       <div class="product-card__price-wrapper">
-          <span class="product-card__price">  price: {{product.price}} $</span>
-          <span class="product-card__category"> {{ product.category }}</span>
+          <span class="product-card__price">  price: {{product?.price}} $</span>
+          <span class="product-card__category"> {{ product?.category }}</span>
       </div>
       <div class="product-card__buttons">
-        <button @click="$emit('add-product', product.id)" class="product-card__button">add to basket</button>
-        <a @click="$emit('to-basket')" class="product-card__button ">go to basket</a>
+        <button @click="emit('add-product', String(product?.id))" class="product-card__button">add to basket</button>
+        <a @click="emit('to-basket')" class="product-card__button ">go to basket</a>
       </div>
       <div  class="product-card__basket-info">
         <span class="product-card__basket-count">already in basket: </span>
@@ -20,19 +20,23 @@
       </div>
       <div class="product-card__rating-wrapper">
         <svg class="product-card__star" id="'icon' + product.id" enable-background="new 0 0 512 512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><g><path d="m284.625 29.622 63.9 122.275 136.4 22.491c25.887 4.268 36.152 35.988 17.674 54.614l-96.891 97.663 20.621 135.843c3.924 25.847-22.885 45.403-46.299 33.773l-124.03-61.603-124.03 61.604c-23.414 11.629-50.223-7.927-46.299-33.773l20.621-135.843-96.89-97.664c-18.478-18.626-8.214-50.346 17.674-54.614l136.4-22.491 63.9-122.275c12.081-23.119 45.167-23.119 57.249 0z" /></g></svg>
-        <span class="product-card__rate">{{ product.rating.rate }}</span>
-        <span class="product-card__count"> {{ product.rating.count }} grades</span>
+        <span class="product-card__rate">{{ product?.rating.rate }}</span>
+        <span class="product-card__count"> {{ product?.rating.count }} grades</span>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { type Product } from '../App.types.ts';
+import { type Product } from './ProductView.types.ts';
 defineProps<{
   product?: Product;
 }>()
 
+const emit = defineEmits<{
+  (e: 'to-basket'): void;
+  (e: 'add-product', id: string): void;
+}>()
 </script>
 
 <style lang="scss" scoped>
