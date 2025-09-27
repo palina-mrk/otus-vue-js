@@ -24,6 +24,8 @@ export type ProductInputType = {
   image: string | undefined,
 };
 
+export type PageViewKey = 'home' | 'number' | 'product' | 'basket';
+
 export type PageView = {
   home: number,
   basket: number,
@@ -34,4 +36,8 @@ export type Payload = {
   allClear: boolean,
   id: number,
   count: number,
+}
+
+export type Basket = {
+  [key: string]:  number | undefined,
 }

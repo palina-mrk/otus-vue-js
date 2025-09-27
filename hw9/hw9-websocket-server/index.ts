@@ -1,5 +1,5 @@
 import { Server } from 'socket.io'
-import { type Payload } from './index.types.ts';
+import { type Payload, type Basket } from './index.types.ts';
 
 const server = new Server(3000, {
   cors: {
@@ -8,7 +8,7 @@ const server = new Server(3000, {
 })
 
 //{id1: count1, id2: count2, ...}
-let basket: any = {};
+let basket: Basket = {};
 
 server.on('connection', (clientSocket) => {
   clientSocket.emit('pong', {

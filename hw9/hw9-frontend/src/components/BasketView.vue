@@ -4,7 +4,7 @@
     <button class="basket__point basket__point--button"
       @click="emit('clear-basket')">clear basket</button>     
   </div>
-  <div v-if="itemIdCount.value != 0" class="basket__list">
+  <div v-if="itemIdCount != 0" class="basket__list">
       <span class="basket__point basket__point--bold">id</span>
       <span class="basket__point basket__point--bold basket__point--width-fixed">title</span>
       <span class="basket__point basket__point--bold basket__point--wide">count</span>
@@ -37,23 +37,23 @@
     <span class="basket__total-word">total cost:</span>
     <span class="basket__total-cost"><b>{{ Number(totalCost).toFixed(2) }}</b></span>
   </div>
-  <div v-if="itemIdCount.value == 0" class="basket__heading"><i>The basket is empty</i></div>
+  <div v-if="itemIdCount == 0" class="basket__heading"><i>The basket is empty</i></div>
 </template>
 
 <script setup lang="ts">
-import {type Product, type Info} from './BasketView.types.ts'
+import {type Product, type Info, type Basket} from './BasketView.types.ts'
 import BasketLine from './subcomponents/BasketLine.vue'
-import { computed, type ComputedRef } from 'vue'
+import { computed } from 'vue'
 const { catalog, basket } = defineProps<{
   catalog: Array<Product>;
-  basket: any;
+  basket: Basket;
 }>()
 
-const itemIdCount: ComputedRef = computed(() => Object.keys(basket).length)
+const itemIdCount = computed<number>(() => Object.keys(basket).length)
 
 const getPrice = (id: string) => catalog?.find(el => el?.id == id)?.price;
 
-const totalCost: ComputedRef<number | undefined> = computed(() => Object.keys(basket).reduce((acc, id) => (acc = Number(acc) + Number(basket[id]) * Number (getPrice(id))), 0))
+const totalCost = computed<number | undefined>(() => Object.keys(basket).reduce((acc, id) => (acc = Number(acc) + Number(basket[id]) * Number (getPrice(id))), 0))
 
 const emit = defineEmits<{
   (e: 'del-product', id: string): void;

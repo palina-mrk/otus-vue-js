@@ -3,3 +3,7 @@ export type Payload = {
   id: number,
   count: number,
 }
+
+export type Basket = {
+  [key: string]:  number | undefined,
+}

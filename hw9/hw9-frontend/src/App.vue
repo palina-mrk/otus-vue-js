@@ -6,16 +6,17 @@ import BasketView from './components/BasketView.vue'
 import BasketState from './components/subcomponents/BasketState.vue'
 import { useQuery, useMutation } from '@vue/apollo-composable';
 import gql from 'graphql-tag'
-import { reactive, type Reactive } from 'vue'
-import { type ProductInputType, type Product, type Payload } from './App.types';
-const pageView: any = reactive({
+import { reactive } from 'vue'
+import { type ProductInputType, type Product, type Payload, type PageView, type PageViewKey, type Basket } from './App.types';
+const pageView = reactive<PageView>({
   home: 1,
   basket: 0,
   product: 0,
 })
-function setPage(field: string, id: number) {
-  Object.keys(pageView).forEach((key) => pageView[key] = 0);
-  pageView[field] = id;  
+function setPage(field: PageViewKey, id: number) {
+  const keys: string[] = Object.getOwnPropertyNames(pageView);
+  keys.forEach((key) => pageView[key as keyof PageView] = 0);
+  pageView[field as keyof PageView] = id;  
   console.log(pageView)  
 }
 
@@ -37,7 +38,7 @@ const { result, refetch } = useQuery(
 )
 
 import ProductInput from './components/subcomponents/ProductInput.vue';
-const newProduct: Reactive<ProductInputType> = reactive({
+const newProduct = reactive<ProductInputType>({
   title: undefined,
   price: undefined,
   description: undefined,
@@ -78,14 +79,14 @@ function addProduct(product: Product) {
 import { io } from 'socket.io-client'
 const socket = io('ws://localhost:3000')
 //basket: {id1: count1, id2: count2, ...}
-const basket: any = reactive({})
+const basket = reactive<Basket>({})
 
 //разговариваем с сервером
 socket.on('pong', (changeInfo: Payload) => {
   if(changeInfo.allClear) {
     Object.keys(basket).forEach((id) => delete basket[id]);
   } else {
-    basket[changeInfo.id] = changeInfo.count;
+    basket[changeInfo.id as keyof Basket] = changeInfo.count;
     if(changeInfo.count === undefined)
       delete basket[changeInfo.id];
   }

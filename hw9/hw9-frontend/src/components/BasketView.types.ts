@@ -15,3 +15,7 @@ export type Info = {
   id: string,
   count: string
 };
+
+export type Basket = {
+  [key: string]:  number | undefined,
+};

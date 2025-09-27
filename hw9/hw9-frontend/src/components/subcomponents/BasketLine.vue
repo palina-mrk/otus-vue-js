@@ -16,15 +16,15 @@
 
 <script setup lang="ts">
 import { type Product, type Info } from './BasketLine.types.ts' 
-import { computed, type ComputedRef } from 'vue'
+import { computed } from 'vue'
 const { id, count, catalog } = defineProps<{
   id: string;
   count: string;
   catalog: Array<Product>;
 }>()
 
-const price: ComputedRef<number | undefined> = computed(() => catalog?.find(el => el?.id == id)?.price);
-const product: ComputedRef = computed(() => catalog.find(el => el?.id == id));
+const price = computed<number | undefined>(() => catalog?.find(el => el?.id == id)?.price);
+const product = computed<Product | undefined>(() => catalog.find(el => el?.id == id));
 
 const emit = defineEmits<{
   (e: 'del-product'): void;

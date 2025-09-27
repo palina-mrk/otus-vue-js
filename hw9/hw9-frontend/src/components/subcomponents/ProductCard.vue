@@ -35,7 +35,7 @@ const {product, basket, catalog}  = defineProps<{
 }>()
 
 
-const itemCount = computed(() => basket[product?.id ?? 0] ? basket[product?.id ?? 0] : 0)
+const itemCount = computed<number>(() => basket[product?.id ?? 0] ? basket[product?.id ?? 0] : 0)
 
 const getPrice = (id: string | undefined) => catalog?.find(el => el?.id == id)?.price;
 

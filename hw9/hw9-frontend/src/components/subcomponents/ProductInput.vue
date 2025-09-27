@@ -65,14 +65,14 @@
 
 <script setup lang="ts">
 import { type ProductInput } from './ProductInput.types.ts'
-import { ref, reactive, defineEmits, type Reactive, type Ref } from 'vue';
+import { ref, reactive, defineEmits } from 'vue';
 const categories = defineProps<{
   categories: Array<string>;
 }>()
 
 console.log(categories)
 
-const newProduct: Reactive<ProductInput> = reactive({
+const newProduct = reactive<ProductInput>({
   title: undefined,
   price: undefined,
   description: undefined,
@@ -80,7 +80,7 @@ const newProduct: Reactive<ProductInput> = reactive({
   image: undefined,
 
 });
-const showCard: Ref<boolean | string> = ref('');
+const showCard = ref<boolean | string>('');
 buttonReset();
 
 const emit = defineEmits();
