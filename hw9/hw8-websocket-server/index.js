@@ -1,5 +1,4 @@
 import { Server } from 'socket.io'
-import { type Payload, type Basket } from './index.types.ts';
 
 const server = new Server(3000, {
   cors: {
@@ -8,7 +7,7 @@ const server = new Server(3000, {
 })
 
 //{id1: count1, id2: count2, ...}
-let basket: Basket = {};
+let basket = {};
 
 server.on('connection', (clientSocket) => {
   clientSocket.emit('pong', {
@@ -18,7 +17,7 @@ server.on('connection', (clientSocket) => {
   })
   basket = {};
 
-  clientSocket.on('add-to-basket', (payload: Payload) => {
+  clientSocket.on('add-to-basket', (payload) => {
     console.log('add-to-basket', payload)
     if(!basket[payload.id])
       basket[payload.id] = 0;
@@ -36,7 +35,7 @@ server.on('connection', (clientSocket) => {
     })
   })
 
-  clientSocket.on('change-count', (payload: Payload) => {
+  clientSocket.on('change-count', (payload) => {
     console.log('change-count', payload)
     
     basket[payload.id] = Number(payload.count)
