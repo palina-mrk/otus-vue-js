@@ -1,75 +1,25 @@
-# Nuxt Minimal Starter
+# Домашняя работа № 11
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+- перевести приложение с интернет-магазином на Nuxt
 
-## Setup
+- ! Нужно подождать, пока загрузятся данные с сервера. До полной загрузки данных Nuxt выдаёт ошибки.
 
-Make sure to install dependencies:
+## страницы
+
+/catalog  
+
+/basket
+
+/product/id, где id - любое число от 1 до 20
+
+## функционал
+
+- добавление товаров в корзину и удаление 
+
+- добавление и удаление товаров в список
 
 ```bash
 # npm
 npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
 npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
