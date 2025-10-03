@@ -1,0 +1,100 @@
+1. Проверки существования и видимости
+.should('exist')        // Элемент существует в DOM
+.should('not.exist')    // Элемент не существует в DOM
+.should('be.visible')   // Элемент видим на странице
+.should('be.hidden')    // Элемент скрыт (display: none, visibility: hidden и т.д.)
+
+2. Проверки состояния элементов форм
+.should('be.disabled')  // Элемент заблокирован
+.should('be.enabled')   // Элемент активен
+.should('be.checked')   // Чекбокс/радио выбран
+.should('not.be.checked') // Чекбокс/радио не выбран
+.should('be.focused')   // Элемент в фокусе
+.should('not.be.focused') // Элемент не в фокусе
+
+3. Проверки содержимого и значений
+.should('contain', 'текст')      // Содержит текст (частичное совпадение)
+.should('not.contain', 'текст')  // Не содержит текст
+.should('have.text', 'точный текст') // Точное совпадение текста
+.should('have.value', 'значение') // Значение input/textarea
+.should('have.attr', 'атрибут')  // Наличие атрибута
+.should('have.attr', 'атрибут', 'значение') // Атрибут с конкретным значением
+.should('have.class', 'class-name') // Наличие CSS класса
+.should('have.css', 'property', 'value') // CSS свойство
+
+4. Проверки количества элементов
+.should('have.length', 5)       // ровно 5 элементов
+.should('have.length.gt', 3)    // больше чем 3 элемента
+.should('have.length.lt', 10)   // меньше чем 10 элементов
+.should('have.length.gte', 4)   // больше или равно 4 элементам
+.should('have.length.lte', 8)   // меньше или равно 8 элементам
+
+5. Проверки для ссылок и изображений
+.should('have.attr', 'href', '/page') // Проверка ссылки
+.should('have.attr', 'src', 'image.jpg') // Проверка источника изображения
+.should('have.attr', 'alt', 'описание') // Alt текст изображения
+
+6. Математические проверки
+.should('be.greaterThan', 10)   // Число больше 10
+.should('be.lessThan', 20)      // Число меньше 20
+.should('be.within', 1, 5)      // Число в диапазоне 1-5
+
+7. Проверки коллекций и массивов
+.should('be.an', 'array')       // Является массивом
+.should('include', 'value')     // Массив содержит значение
+.should('have.members', [1,2,3]) // Массив содержит точно эти элементы
+
+Практические примеры использования:
+// Комплексная проверка формы
+cy.get('form')
+  .should('exist')
+  .and('be.visible')
+
+// Проверка input field
+cy.get('#email')
+  .should('have.value', 'test@example.com')
+  .and('have.attr', 'type', 'email')
+  .and('be.enabled')
+
+// Проверка чекбокса
+cy.get('#agree-terms')
+  .should('be.checked')
+  .and('have.attr', 'required')
+
+// Проверка количества элементов
+cy.get('.list-item')
+  .should('have.length', 5)
+  .and('be.visible')
+
+// Проверка текста с точным совпадением
+cy.get('.title')
+  .should('have.text', 'Добро пожаловать!')
+
+// Проверка CSS стилей
+cy.get('.button')
+  .should('have.css', 'background-color', 'rgb(0, 128, 0)')
+  .and('have.css', 'font-size', '16px')
+
+// Проверка ссылки
+cy.get('a[data-test="home-link"]')
+  .should('have.attr', 'href', '/home')
+  .and('contain', 'На главную')
+
+Цепочки утверждений:
+// Можно объединять несколько проверок
+cy.get('[data-test="user-card"]')
+  .should('exist')
+  .and('be.visible')
+  .and('have.class', 'active')
+  .and('contain', 'Иван Иванов')
+  .and('have.attr', 'data-user-id', '123')
+
+Отрицательные утверждения:
+cy.get('.error-message')
+  .should('not.exist') // Ошибки не должно быть
+
+cy.get('#submit-btn')
+  .should('not.be.disabled') // Кнопка не заблокирована
+
+cy.get('input[type="password"]')
+  .should('not.have.value', '') // Поле не пустое

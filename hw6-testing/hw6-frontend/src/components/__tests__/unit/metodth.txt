@@ -1,0 +1,209 @@
+expect - Ожидание/Утверждение
+Принимает фактическое значение (результат выполнения кода)
+
+Возвращает объект с методами для проверок (matchers)
+
+Используется для проверки соответствия ожидаемому результату
+
+expect(5 + 3).toBe(8) // Ожидаем, что 5+3 будет 8
+
+======================
+
+toBe - Быть равным (строгое сравнение)
+Сравнивает значения по ссылке и типу
+
+Не работает для объектов и массивов (для них используйте toEqual)
+
+Идеален для примитивов: числа, строки, булевы значения
+expect(5).toBe(5)           // ✓
+expect(5).toBe('5')           // х
+expect('text').toBe('text') // ✓
+expect(null).toBe(null)     // ✓
+
+====================
+
+toHaveLength - Иметь длину
+для проверки длины массивов, строк или итерируемых объектов
+
+Проверяет свойство .length
+
+Работает с: массивами, строками, Set, Map, NodeList
+
+Примеры:
+
+
+expect([1, 2, 3]).toHaveLength(3)      // Массив из 3 элементов
+expect('hello').toHaveLength(5)        // Строка из 5 символов
+expect(new Set([1, 2])).toHaveLength(2) // Set из 2 элементов
+
+=====================
+vi.useFakeTimers()
+Замена настоящих таймеров (setTimeout, setInterval) на искусственные
+Ускоряет тесты с таймерами
+
+Дает полный контроль над временем
+
+Позволяет "перематывать" время
+
+Избавляет от реальных ожиданий
+
+vi.advanceTimersByTime(1000) - Перемотать время вперед
+Выполняет все callback'и таймеров, которые должны были выполниться за этот период
+
+Не требует реального ожидания
+
+Мгновенно перемещает виртуальное время
+vi.useRealTimers() - Включить настоящие таймеры
+Очищает моки таймеров
+
+Возвращает нормальное поведение таймеров
+
+Предотвращает влияние тестов друг на друга
+
+Важно: Всегда восстанавливать после теста!
+
+=============================
+
+
+1. Проверки массивов
+// Длина массива
+expect([1, 2, 3]).toHaveLength(3)
+
+// Содержит элемент (любое место в массиве)
+expect([1, 2, 3]).toContain(2)
+
+// Содержит точную последовательность
+expect([1, 2, 3]).toEqual(expect.arrayContaining([1, 2]))
+
+// Совпадение всех элементов по шаблону
+expect([1, 2, 3]).toEqual(expect.arrayContaining([
+  expect.any(Number),
+  expect.any(Number), 
+  expect.any(Number)
+]))
+
+2. Проверки объектов
+// Содержит свойство
+expect(user).toHaveProperty('name')
+expect(user).toHaveProperty('address.city')
+
+// Свойство с конкретным значением
+expect(user).toHaveProperty('name', 'John')
+
+// Совпадение структуры объекта
+expect(user).toEqual({
+  name: expect.any(String),
+  age: expect.any(Number),
+  email: expect.stringContaining('@')
+})
+
+// Содержит частичные совпадения
+expect(user).toMatchObject({
+  name: 'John',
+  age: 25
+})
+
+3. Проверки строк
+// Содержит подстроку
+expect('Hello World').toContain('Hello')
+expect('Hello World').toMatch(/Hello/)
+
+// Регулярные выражения
+expect('123-45-6789').toMatch(/^\d{3}-\d{2}-\d{4}$/)
+
+// Длина строки
+expect('hello').toHaveLength(5)
+
+4. Проверки чисел
+// Больше, меньше
+expect(10).toBeGreaterThan(5)
+expect(10).toBeLessThan(20)
+expect(10).toBeGreaterThanOrEqual(10)
+expect(10).toBeLessThanOrEqual(10)
+
+// Приблизительное равенство (для дробных чисел)
+expect(0.1 + 0.2).toBeCloseTo(0.3, 5)
+
+5. Специальные проверки
+// Любое значение определенного типа
+expect('string').toEqual(expect.any(String))
+expect(123).toEqual(expect.any(Number))
+expect({}).toEqual(expect.any(Object))
+
+// Не null/undefined
+expect('value').toBeDefined()
+expect(null).toBeNull()
+expect(undefined).toBeUndefined()
+
+// Truthy/Falsy
+expect('hello').toBeTruthy()
+expect('').toBeFalsy()
+expect(0).toBeFalsy()
+
+6. Отрицательные проверки
+// Противоположности
+expect(5).not.toBe(10)
+expect([1, 2, 3]).not.toContain(4)
+expect(null).not.toBeDefined()
+expect('hello').not.toHaveLength(10)
+
+7. Проверки функций и моков
+// Функция была вызвана
+expect(mockFunction).toHaveBeenCalled()
+
+// Количество вызовов
+expect(mockFunction).toHaveBeenCalledTimes(3)
+
+// Вызов с конкретными аргументами
+expect(mockFunction).toHaveBeenCalledWith('arg1', 'arg2')
+
+// Последний вызов с аргументами
+expect(mockFunction).toHaveBeenLastCalledWith('last', 'args')
+
+8. Проверки промисов и асинхронного кода
+// Промис резолвится
+await expect(Promise.resolve('value')).resolves.toBe('value')
+
+// Промис реджектится
+await expect(Promise.reject('error')).rejects.toBe('error')
+
+Практические примеры:
+// Комплексная проверка пользователя
+expect(user).toEqual({
+  id: expect.any(Number),
+  name: expect.stringMatching(/^[A-Z][a-z]+$/),
+  email: expect.stringContaining('@'),
+  age: expect.any(Number),
+  hobbies: expect.arrayContaining(['reading', 'sports']),
+  address: {
+    city: expect.any(String),
+    zipCode: expect.stringMatching(/^\d{5}$/)
+  }
+})
+
+// Проверка API ответа
+expect(response).toEqual({
+  status: 200,
+  data: expect.arrayContaining([
+    expect.objectContaining({
+      id: expect.any(String),
+      name: expect.any(String),
+      price: expect.any(Number)
+    })
+  ]),
+  timestamp: expect.any(Number)
+})
+
+// Проверка ошибки валидации
+expect(validationErrors).toEqual({
+  email: expect.stringContaining('некорректный'),
+  password: expect.stringContaining('короткий')
+})
+
+Цепочки проверок:
+// Можно комбинировать проверки
+expect(result)
+  .toBeDefined()
+  .toHaveProperty('data')
+  .toHaveLength(3)
+  .toContain(expect.objectContaining({ valid: true }))
